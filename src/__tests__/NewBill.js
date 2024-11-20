@@ -218,6 +218,8 @@ describe("Given I am connected as an employee", () => {
   
         window.onNavigate(ROUTES_PATH.NewBill)
         await new Promise(process.nextTick);
+        await waitFor(() => expect(screen.getByText(/Erreur 500/)).toBeTruthy());
+
         const message = await screen.getByText(/Erreur 500/)
         expect(message).toBeTruthy()
       })
