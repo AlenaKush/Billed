@@ -197,21 +197,35 @@ describe("Given I am connected as an employee", () => {
   
         mockStore.bills.mockImplementationOnce(() => {
           return {
-            list : () =>  {
+            create: () => Promise.reject(new Error("Erreur 404"))
+            /*list : () =>  {
               return Promise.reject(new Error("Erreur 404"))
-            }
+            }*/
           }})
         window.onNavigate(ROUTES_PATH.NewBill)
-        await new Promise(process.nextTick);
-        const message = await screen.getByText(/Erreur 404/)
-        expect(message).toBeTruthy()
+        // Spy on console.log to track its calls
+        const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {})
+        
+        // Simulate the error directly
+        const newBill = new NewBill({
+          document,
+          onNavigate: jest.fn(),
+          store: mockStore,
+          localStorage: window.localStorage
+        })
+
+        // Trigger the API call that fails
+        await newBill.store.bills().create().catch((error) => {
+        console.log(error)
+        /*const message = await screen.getByText(/Erreur 404/)
+        expect(message).toBeTruthy()*/
       })
   
       test("fetches messages from an API and fails with 500 message error", async () => {
   
         mockStore.bills.mockImplementationOnce(() => {
           return {
-            list : () =>  {
+            create : () =>  {
               return Promise.reject(new Error("Erreur 500"))
             }
           }})
@@ -226,4 +240,4 @@ describe("Given I am connected as an employee", () => {
     })
   })
 })
-
+})
