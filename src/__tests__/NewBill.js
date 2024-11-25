@@ -192,20 +192,80 @@ describe("Given I am connected as an employee", () => {
         root.setAttribute("id", "root")
         document.body.appendChild(root)
         router()
+
+        
       })
       test("fetches bills from an API and fails with 404 message error", async () => {
-  
+        
+        document.body.innerHTML = NewBillUI()
+
         mockStore.bills.mockImplementationOnce(() => {
           return {
             create: () => Promise.reject(new Error("Erreur 404"))
-            /*list : () =>  {
-              return Promise.reject(new Error("Erreur 404"))
-            }*/
           }})
         window.onNavigate(ROUTES_PATH.NewBill)
-        // Spy on console.log to track its calls
-        const consoleSpy = jest.spyOn(console, "log").mockImplementation(() => {})
         
+        // Simulate the error directly
+        const newBill = new NewBill({
+          document,
+          onNavigate: jest.fn(),
+          store: mockStore,
+          localStorage: window.localStorage
+        })
+        
+        global.console = {...console, error: jest.fn()}
+        const spyErreur = jest.spyOn(console, 'error')
+
+        const handleChangeFile = jest.fn(newBill.handleChangeFile.bind(newBill))
+        const fileInput = screen.getByTestId("file")
+
+        const validFile = new File(["file content"], "test.jpg", { type: "image/jpeg" })
+        fireEvent.change(fileInput, { target: { files: [validFile] } })
+
+        await new Promise(process.nextTick)
+
+        expect(spyErreur).toHaveBeenCalledWith(new Error('Erreur 404'))
+
+       
+      })
+  
+      test("fetches messages from an API and fails with 500 message error", async () => {
+        document.body.innerHTML = NewBillUI()
+
+        mockStore.bills.mockImplementationOnce(() => {
+          return {
+            create: () => Promise.reject(new Error("Erreur 500"))
+          }})
+        window.onNavigate(ROUTES_PATH.NewBill)
+        
+        // Simulate the error directly
+        const newBill = new NewBill({
+          document,
+          onNavigate: jest.fn(),
+          store: mockStore,
+          localStorage: window.localStorage
+        })
+        
+        global.console = {...console, error: jest.fn()}
+        const spyErreur = jest.spyOn(console, 'error')
+
+        const handleChangeFile = jest.fn(newBill.handleChangeFile.bind(newBill))
+        const fileInput = screen.getByTestId("file")
+
+        const validFile = new File(["file content"], "test.jpg", { type: "image/jpeg" })
+        fireEvent.change(fileInput, { target: { files: [validFile] } })
+
+        await new Promise(process.nextTick)
+
+        expect(spyErreur).toHaveBeenCalledWith(new Error('Erreur 500'))
+       /* mockStore.bills.mockImplementationOnce(() => {
+          return {
+            create : () =>  {
+              return Promise.reject(new Error("Erreur 500"))
+            }
+          }})
+  
+        window.onNavigate(ROUTES_PATH.NewBill)
         // Simulate the error directly
         const newBill = new NewBill({
           document,
@@ -216,28 +276,11 @@ describe("Given I am connected as an employee", () => {
 
         // Trigger the API call that fails
         await newBill.store.bills().create().catch((error) => {
-        console.log(error)
-        /*const message = await screen.getByText(/Erreur 404/)
-        expect(message).toBeTruthy()*/
-      })
-  
-      test("fetches messages from an API and fails with 500 message error", async () => {
-  
-        mockStore.bills.mockImplementationOnce(() => {
-          return {
-            create : () =>  {
-              return Promise.reject(new Error("Erreur 500"))
-            }
-          }})
-  
-        window.onNavigate(ROUTES_PATH.NewBill)
-        await new Promise(process.nextTick);
-        await waitFor(() => expect(screen.getByText(/Erreur 500/)).toBeTruthy());
-
-        const message = await screen.getByText(/Erreur 500/)
-        expect(message).toBeTruthy()
+          console.log(error)
+        })*/
       })
     })
   })
 })
-})
+
+

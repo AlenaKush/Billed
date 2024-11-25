@@ -122,7 +122,7 @@ describe("Given I am connected as an employee", () => {
           }
         }})
       window.onNavigate(ROUTES_PATH.Bills)
-      await new Promise(process.nextTick);
+      await new Promise(process.nextTick)
       const message = await screen.getByText(/Erreur 404/)
       expect(message).toBeTruthy()
     })
