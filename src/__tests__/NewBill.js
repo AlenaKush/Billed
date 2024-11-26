@@ -258,26 +258,7 @@ describe("Given I am connected as an employee", () => {
         await new Promise(process.nextTick)
 
         expect(spyErreur).toHaveBeenCalledWith(new Error('Erreur 500'))
-       /* mockStore.bills.mockImplementationOnce(() => {
-          return {
-            create : () =>  {
-              return Promise.reject(new Error("Erreur 500"))
-            }
-          }})
-  
-        window.onNavigate(ROUTES_PATH.NewBill)
-        // Simulate the error directly
-        const newBill = new NewBill({
-          document,
-          onNavigate: jest.fn(),
-          store: mockStore,
-          localStorage: window.localStorage
-        })
-
-        // Trigger the API call that fails
-        await newBill.store.bills().create().catch((error) => {
-          console.log(error)
-        })*/
+       
       })
     })
   })

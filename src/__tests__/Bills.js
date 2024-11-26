@@ -66,12 +66,17 @@ describe("Given I am connected as an employee", () => {
    
   
     test("Then it should return bills with correctly formatted date and status", async () => {
-     
+      // Create an instance of the Bills class with necessary dependencies (mocks for testing).
       const billsInstance = new Bills({ document, onNavigate: jest.fn(), store: mockStore, localStorage: localStorageMock  })
+      // Call the getBills() method, which retrieves and formats the list of bills.
       const bills = await billsInstance.getBills()
+      // Get the list of bills directly from the mock store for comparison.
       const mockBillsList = await mockStore.bills().list() 
+      // Check that the returned bills array is not empty.
       expect(bills.length).toBeGreaterThan(0)
+      // Verify that the date of the first bill is correctly formatted using the formatDate function.
       expect(bills[0].date).toBe(formatDate(mockBillsList[0].date))
+      // Verify that the status of the first bill is correctly formatted using the formatStatus function.
       expect(bills[0].status).toBe(formatStatus(mockBillsList[0].status))
     
     })
